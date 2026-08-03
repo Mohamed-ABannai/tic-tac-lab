@@ -9,157 +9,107 @@ const winningCombos = [
     [2, 5, 8],
     [2, 4, 6],
     [0, 4, 8]
+];
 
-]
 
 /*---------------------------- Variables (state) ----------------------------*/
-let board = ['', '', '', '', '', '', '', '', '']
-let turn = 'X'
-let winner = false
-let tie = false
 
-
+let board = ['', '', '', '', '', '', '', '', ''];
+let turn = 'X';
+let winner = false;
+let tie = false;
 
 
 /*------------------------ Cached Element References ------------------------*/
-const squareEls = document.querySelectorAll('.sqr')
 
-const messageEl = document.querySelector('#message')
+const squareEls = document.querySelectorAll('.sqr');
 
-const resetBtnEl = document.querySelector('#resetBtnEl')
+const messageEl = document.querySelector('#message');
+
+const resetBtnEl = document.querySelector('#resetBtnEl');
+
 
 /*-------------------------------- Functions --------------------------------*/
-function init() {
-
-    board = ['', '', '', '', '', '', '', '', '']
-    turn = 'X'
-    winner = false
-    tie = false
-
-    render()
-}
-
-
-function render() {
-
-    updateBoard()
-    updateMessage()
-
-}
-
-
-
-
-function updateBoard() {
-
-    for (let i = 0; i < board.length; i++) {
-
-        squareEls[i].textContent = board[i]
-    }
-
-}
-
-
-function updateMessage() {
-
-    if (!winner && !tie) {
-
-        messageEl.textContent = `${turn}'s turn`
-
-    } else if (!winner && tie) {
-
-        messageEl.textContent = `It's a tie!`
-
-    } else {
-
-        messageEl.textContent = `${turn} wins!`
-
-    }
-
-}
 
 function handleClick(event) {
 
-    const squareIndex = event.target.id
-
-    if (board[squareIndex] === 'X' || board[squareIndex] === 'O' || winner) {
-        return
+    if (event.target.textContent !== '' || winner === true || tie === true ) {
+        return;
     }
 
-    placePiece(squareIndex)
-    checkForWinner()
-    checkForTie()
-    switchPlayerTurn()
-    render()
+    event.target.textContent = turn;
 
-}
+    checkWinner();
 
-function placePiece(index) {
-
-    board[index] = turn
-
-}
-
-
-function checkForWinner() {
-
-    for (let i = 0; i < winningCombos.length; i++) {
-
-        const [a, b, c] = winningCombos[i]
-
-        if (board[a] !== '' && board[a] === board[b] && board[a] === board[c]) {
-
-            winner = true
-
-        }
-
+    if (winner === true) {
+        messageEl.textContent = `Player ${turn} Wins`;
+        return;
+        
     }
 
-}
+    checkTie();
 
-function checkForTie() {
-
-    if (winner) {
-        return
-    }
-
-    let boardFull = true
-
-    for (let i = 0; i < board.length; i++) {
-
-        if (board[i] === '') {
-            boardFull = false
-        }
-
-    }
-
-    if (boardFull) {
-        tie = true
-    }
-
-}
-
-function switchPlayerTurn() {
-
-    if (winner) {
-        return
+    if (tie === true) {
+        messageEl.textContent = 'Players Tie';
+        return;
     }
 
     if (turn === 'X') {
-        turn = 'O'
+        turn = 'O';
     } else {
-        turn = 'X'
+        turn = 'X';
     }
 
+    messageEl.textContent = `Player ${turn} Turn`;
 }
 
 
+function checkWinner() {
+
+    for (let i = 0; i < winningCombos.length; i++) {
+
+        let a = winningCombos[i][0];
+        let b = winningCombos[i][1];
+        let c = winningCombos[i][2];
+
+        if (squareEls[a].textContent === turn && squareEls[b].textContent === turn &&squareEls[c].textContent === turn) {
+            winner = true;
+            return;
+        }
+    }
+}
+
+
+function checkTie() {
+
+    tie = true;
+
+    for (let i = 0; i < squareEls.length; i++) {
+
+        if (squareEls[i].textContent === '') {
+            tie = false;
+            return;
+        }
+    }
+}
+
+function reset() {
+
+    board = ['', '', '', '', '', '', '', '', ''];
+    turn = 'X';
+    winner = false;
+    tie = false;
+
+    for (let i = 0; i < squareEls.length; i++) {
+        squareEls[i].textContent = '';
+    }
+
+    messageEl.textContent = `Player ${turn} Turn`;
+}
 /*----------------------------- Event Listeners -----------------------------*/
 
 for (let oneSquare of squareEls) {
-    oneSquare.addEventListener('click', handleClick)
+    oneSquare.addEventListener('click', handleClick);
 }
 
-resetBtnEl.addEventListener('click', init)
-
-init()
+resetBtnEl.addEventListener('click',reset)
