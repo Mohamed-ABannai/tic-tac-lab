@@ -15,7 +15,7 @@ const winningCombos = [
 /*---------------------------- Variables (state) ----------------------------*/
 
 let board = ['', '', '', '', '', '', '', '', ''];
-let turn = 'X';
+let turn = '⚽';
 let winner = false;
 let tie = false;
 
@@ -54,10 +54,10 @@ function handleClick(event) {
         return;
     }
 
-    if (turn === 'X') {
-        turn = 'O';
+    if (turn === '⚽') {
+        turn = '🏀';
     } else {
-        turn = 'X';
+        turn = '⚽';
     }
 
     messageEl.textContent = `Player ${turn} Turn`;
@@ -96,7 +96,7 @@ function checkTie() {
 function reset() {
 
     board = ['', '', '', '', '', '', '', '', ''];
-    turn = 'X';
+    turn = '⚽';
     winner = false;
     tie = false;
 
